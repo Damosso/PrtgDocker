@@ -1139,7 +1139,6 @@ function Install-PrtgServer
         $job | Remove-Job -Force
     }
 
-    __InstallFonts
     __DisableNags
     __MoveCustomSensors
 
@@ -1251,40 +1250,6 @@ function __ExecInstall($installer, $installerArgs, $logFile)
         }
 
         __FailInstall "!!! ERROR: installer did not complete successfully" $logFile
-    }
-}
-
-function __InstallFonts
-{
-    Write-Host "Checking required fonts are installed"
-
-    $fonts = gci $script:imageContext *.ttf
-
-    if(!$fonts)
-    {
-        throw "Couldn't find any fonts in Docker Context. PrtgDocker should have automatically copied over Arial and Tahoma"
-    }
-
-    $fontsFolder = "C:\Windows\Fonts"
-
-    foreach($font in $fonts)
-    {
-        $destination = Join-Path $fontsFolder $font.Name
-
-        if(!(Test-Path $destination))
-        {
-            Write-Host "    Installing font '$($font.Name)'"
-
-            $fontName = __GetFontName $font.Name
-
-            Move-Item $font.FullName $destination
-
-            New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts" -Name "$fontName (TypeType)" -Value $font.Name -PropertyType String -Force | Out-Null
-        }
-        else
-        {
-            Write-Host "    Font '$($font.Name)' is already installed"
-        }
     }
 }
 
@@ -1491,7 +1456,6 @@ function Install-PrtgProbe
     }
 
     __ExecInstall $installer.FullName $installerArgs $installerLog
-    __InstallFonts
     __MoveCustomSensors
     __VerifyProbeBuild $installerLog
     __CleanupProbeBuild
