@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=mcr.microsoft.com/windows/servercore:ltsc2019
+ARG BASE_IMAGE=mcr.microsoft.com/windows/server:ltsc2022
 FROM $BASE_IMAGE
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
@@ -7,10 +7,13 @@ ARG PRTG_INSTALLER_URL
 arg PRTG_INSTALLER_ADDITIONAL_ARGS
 ARG PRTG_EMAIL="prtg@example.com"
 ARG PRTG_LICENSENAME="prtgtrial"
-ARG PRTG_LICENSEKEY="000014-250KFM-8FFN6H-31QZ6R-DD7ABX-GE8EQN-CXUU28-1W32K6-RPBM77-W2KV7Y"
+ARG PRTG_LICENSEKEY="000014-YZ6KFM-8FFR8Y-JFF7UE-1HANF7-22MGUY-MJQV86-FHY6EX-BGDEUY-CU7HFJ"
 
 COPY PrtgDocker.ps1 config.dat* *.exe *.ttf C:/Installer/
-RUN Set-ExecutionPolicy Unrestricted; C:/Installer/PrtgDocker.ps1 -Install
+
+RUN Set-ExecutionPolicy Unrestricted; C:/Installer/PrtgDocker.ps1 -Install 
+
+COPY RegSync.ps1 RegImport.ps1 TaskSchedule.ps1 C:/Scripts/
 
 ENTRYPOINT ["powershell"]
-CMD ["-command", "C:/Installer/PrtgDocker.ps1 -Wait"]
+CMD ["-command", "C:/Scripts/RegImport.ps1 | C:/Scripts/TaskSchedule.ps1 ; C:/Installer/PrtgDocker.ps1 -Wait"]
