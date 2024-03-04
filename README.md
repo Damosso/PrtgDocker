@@ -1,3 +1,43 @@
+
+# PRTG in a docker container
+
+Credits to lordmilko/PrtgDocker. My image is based in his work.
+
+
+There are a few problems when trying to run PRTG in Docker. The first is that some settings are synced in the Windows Registry. I have not yet found a way to get Registry items persistent, but I managed to find a workaround to still sync it somehow. In the container, there are some scripts to export the registry every minute and import it every time you start the container. the Registry is saved in C:\Reg\ and the scripts can be found in C:\Scripts\
+
+
+## Deployment
+
+To deploy this project run
+
+```bash
+version: '3.8'
+services:
+    prtg:
+        stdin_open: true
+        tty: true
+        volumes:
+            - \your\directory:C:\Reg\
+            - \your\directory:C:\ProgramData\Paessler\PRTG Network Monitor\
+        ports:
+            - 8080:80
+        image: rik442/prtg:latest
+```
+
+
+## Authors
+
+- [@damosso](https://github.com/Damosso/PrtgDocker)
+
+
+## Acknowledgements
+
+ - [PrtgDocker](https://github.com/lordmilko/PrtgDocker)
+
+
+
+
 # PrtgDocker
 
 Have you ever wanted to run PRTG Network Monitor in Docker? No? Well now you can!
