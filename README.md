@@ -6,9 +6,6 @@ Credits to lordmilko/PrtgDocker. My image is based in his work.
 
 There are a few problems when trying to run PRTG in Docker. The first is that some settings are synced in the Windows Registry. I have not yet found a way to get Registry items persistent, but I managed to find a workaround to still sync it somehow. In the container, there are some scripts to export the registry every minute and import it every time you start the container. the Registry is saved in C:\Reg\ and the scripts can be found in C:\Scripts\
 
-My Image is build in a Windows server 2022 container. the original image uses 2019 but I am not seeing any faults when using the 2022 image. The only thing to keep in mind is to update your OS to the latest version otherwise there could be complications.
-Keep in mind that both are still possible. You just need to rebuild the image with the 2019 container instead of 2022
-
 
 ## Deployment
 
